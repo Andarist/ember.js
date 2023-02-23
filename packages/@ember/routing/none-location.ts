@@ -133,3 +133,9 @@ NoneLocation.reopen({
   path: '',
   rootURL: '/',
 });
+
+declare module '@ember/routing/location' {
+  export interface Registry {
+    none: NoneLocation;
+  }
+}

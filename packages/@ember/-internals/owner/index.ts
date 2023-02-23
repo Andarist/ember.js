@@ -175,7 +175,7 @@ interface BasicRegistry {
 }
 
 type ValidType = keyof DIRegistry & string;
-type ValidName<Type extends ValidType> = keyof DIRegistry[Type] & string;
+type ValidName<Type extends ValidType> = DIRegistry[Type] & string;
 
 /**
   The common interface for the ability to `lookup()` or get the `factoryFor` an

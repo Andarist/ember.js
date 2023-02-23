@@ -260,9 +260,6 @@ let allExports = [
   // @ember/object/proxy
   ['ObjectProxy', '@ember/object/proxy', 'default'],
 
-  // @ember/routing/auto-location
-  ['AutoLocation', '@ember/routing/auto-location', 'default'],
-
   // @ember/routing/hash-location
   ['HashLocation', '@ember/routing/hash-location', 'default'],
 

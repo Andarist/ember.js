@@ -1,36 +1,20 @@
-import { assert, deprecate } from '@ember/debug';
-
-export interface ILocation {
-  implementation: string;
-  cancelRouterSetup?: boolean;
-  getURL(): string;
-  setURL(url: string): void;
-  replaceURL?(url: string): void;
-  onUpdateURL(callback: UpdateCallback): void;
-  formatURL(url: string): string;
-  detect?(): void;
-  initState?(): void;
-  destroy(): void;
-}
-
-export type UpdateCallback = (url: string) => void;
 /**
-@module @ember/routing/location
+  @module @ember/routing/location
 */
 
 /**
-  Location returns an instance of the correct implementation of
-  the `location` API.
+  `Location` defines an interface to be implemented by `location` APIs. It is
+  not user-constructible; the only valid way to get a `Location` is via one of
+  its concrete implementations.
 
   ## Implementations
 
-  You can pass an implementation name (`hash`, `history`, `none`, `auto`) to force a
+  You can pass an implementation name (`hash`, `history`, `none`) to force a
   particular implementation to be used in your application.
 
   See [HashLocation](/ember/release/classes/HashLocation).
   See [HistoryLocation](/ember/release/classes/HistoryLocation).
   See [NoneLocation](/ember/release/classes/NoneLocation).
-  See [AutoLocation](/ember/release/classes/AutoLocation).
 
   ## Location API
 
@@ -78,53 +62,29 @@ export type UpdateCallback = (url: string) => void;
   @class Location
   @private
 */
-export default {
-  /**
-   This is deprecated in favor of using the container to lookup the location
-   implementation as desired.
+export interface ILocation {
+  implementation: string;
+  cancelRouterSetup?: boolean;
+  getURL(): string;
+  setURL(url: string): void;
+  replaceURL?(url: string): void;
+  onUpdateURL(callback: UpdateCallback): void;
+  formatURL(url: string): string;
+  detect?(): void;
+  initState?(): void;
+  destroy(): void;
+}
 
-   For example:
+export type UpdateCallback = (url: string) => void;
 
-   ```javascript
-   // Given a location registered as follows:
-   container.register('location:history-test', HistoryTestLocation);
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Registry extends Record<string, ILocation | undefined> {}
 
-   // You could create a new instance via:
-   container.lookup('location:history-test');
-   ```
+declare module '@ember/owner' {
+  export interface DIRegistry {
+    location: Registry;
+  }
+}
 
-    @method create
-    @param {Object} options
-    @return {Object} an instance of an implementation of the `location` API
-    @deprecated Use the container to lookup the location implementation that you
-    need.
-    @private
-  */
-  create(options?: { implementation: string }): ILocation {
-    let implementation = options?.implementation;
-    assert("Location.create: you must specify a 'implementation' option", implementation);
-
-    let implementationClass = this.implementations[implementation];
-
-    assert(`Location.create: ${implementation} is not a valid implementation`, implementationClass);
-
-    deprecate(
-      "Calling `create` on Location class is deprecated. Instead, use `container.lookup('location:my-location')` to lookup the location you need.",
-      false,
-      {
-        id: 'deprecate-auto-location',
-        until: '5.0.0',
-        url: 'https://emberjs.com/deprecations/v4.x#toc_deprecate-auto-location',
-        for: 'ember-source',
-        since: {
-          available: '4.1.0',
-          enabled: '4.1.0',
-        },
-      }
-    );
-
-    return implementationClass.create(...arguments);
-  },
-
-  implementations: {} as Record<string, { create: (...args: any[]) => ILocation }>,
-};
+const Location = {};
+export default Location;
